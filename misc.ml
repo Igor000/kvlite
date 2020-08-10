@@ -64,6 +64,13 @@ module Dbmod = struct
      match a_record with
      | { created ; key_size; key; value_size ; value } -> key, value;;
 
+  let marshal_to_bytes var1 =
+         Marshal.to_bytes var1 [Marshal.No_sharing];;
+
+  let marshal_from_bytes var_as_bytes =
+     let var2 : Dbmod.db_data  = Marshal.from_bytes var_as_bytes  0 in
+     var2;;
+
 
 end;;
 
