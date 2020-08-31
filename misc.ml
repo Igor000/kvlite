@@ -6,6 +6,7 @@ let add x y = x + y
 let sub x y = x - y
 
 type db_data = { created : float; key_size: int; key  : string; value_size : int; value: string }
+type bytes_data = { bytes_size : int; bytes_data  : bytes }
 
 
   (*
@@ -21,6 +22,16 @@ type db_data = { created : float; key_size: int; key  : string; value_size : int
 
 module Dbmod = struct
   (* type db_data = { created : float; key_size: int; key  : string; value_size : int; value: string }  *)
+
+  let create_bytes_data value =
+  {
+     bytes_size = Bytes.length value;
+     bytes_data = value;
+  }
+
+  let get_bytes_data a_record =
+     match a_record with
+     | { bytes_size ; bytes_data  } -> bytes_size, bytes_data;;
 
   let create_db_data key value =
   {
