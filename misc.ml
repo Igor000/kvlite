@@ -1,39 +1,26 @@
-  (*
-#use "./misc.ml";;
-
-let r11 = Dbmod.create_db_data "key1" "val1";;
-val r11 : Dbmod.db_data =
-  {Dbmod.created = 1590890792.6847849; key_size = 4; key = "key1";
-   value_size = 4; value = "val1"}
-
-Dbmod.print_created r11;;
-
-     let a, b = Dbmod.get_key  r11;;
-
-let r12 = Dbmod.create_db_data "key2" "val2";;
-Dbmod.get_key_value r12;;
-
-
-   *
-   *
-   * *)
 open Base;;
 open Base.Poly;;
-open Stdio;;
+
+let add x y = x + y
+
+let sub x y = x - y
+
+type db_data = { created : float; key_size: int; key  : string; value_size : int; value: string }
+
 
   (*
    *  In utop to load a module :
    #use "./misc.ml";;
 
-   * To use a function in the module: 
-   
+   * To use a function in the module:
+
      utop # Misc.trim " sd fsd ";;
 - : string = "sd fsd"
-    
+
    *)
 
 module Dbmod = struct
-  type db_data = { created : float; key_size: int; key  : string; value_size : int; value: string }
+  (* type db_data = { created : float; key_size: int; key  : string; value_size : int; value: string }  *)
 
   let create_db_data key value =
   {
@@ -59,7 +46,6 @@ module Dbmod = struct
      match a_record with
      | { created ; key_size; key; value_size ; value } -> value, value_size;;
 
-
   let get_key_value a_record =
      match a_record with
      | { created ; key_size; key; value_size ; value } -> key, value;;
@@ -68,13 +54,17 @@ module Dbmod = struct
          Marshal.to_bytes var1 [Marshal.No_sharing];;
 
   let marshal_from_bytes var_as_bytes =
-     let var2 : Dbmod.db_data  = Marshal.from_bytes var_as_bytes  0 in
+     let var2 : db_data  = Marshal.from_bytes var_as_bytes  0 in
      var2;;
-
 
 end;;
 
 
+module M = struct 
+  let x = 42 
+end;;
+
+(*
 module Misc = struct
 
   let x = 43
@@ -129,11 +119,6 @@ module Misc = struct
    *
    *)
 
-
 end;;
 
-
-
-module M = struct 
-  let x = 42 
-end;;
+*)
