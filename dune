@@ -1,0 +1,19 @@
+;; This declares the hello_world executable implemented by hello_world.ml
+;;  (public_name kvlite)
+
+(env
+  (dev
+    (flags (:standard -warn-error -A))))
+
+(executable
+  (name main)
+  (modules main)
+  (libraries  kvlite))
+
+(library
+  (name kvlite)
+  (modules misc)
+  (libraries  core)
+)
+
+
