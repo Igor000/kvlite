@@ -21,6 +21,13 @@ let () =
   print_endline ("Size of int " ^ string_of_int (result));;
   print_endline "=========================";;
 
+  print_endline "=== Int to Bytes ========";;
+  let var1 = 1000;;
+  let var_bytes1 =  Dbmod.marshal_to_bytes var1;;
+
+  print_endline ("Size of var_bytes1 = 1000  => " ^ string_of_int(Bytes.length(var_bytes1)));;  
+  print_endline "=========================";;
+
 
   let bytes_test = Bytes.of_string("And bye");;
   let bytes_test_buf = Dbmod.create_bytes_data bytes_test;;
