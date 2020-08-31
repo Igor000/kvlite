@@ -1,6 +1,7 @@
 open Kvlite 
 
 module M=Misc.M
+module My_misc=Misc.Misc
 module Dbmod=Misc.Dbmod
 
 let () =
@@ -13,6 +14,10 @@ let () =
   (* let result = Misc.M.x in  *)
   let result = Misc.M.x in
   print_endline (string_of_int result);;
+
+
+  let result = My_misc.size_of_int (-1);;
+  print_endline ("Size of int " ^ string_of_int (result));;
 
   let var1 = Dbmod.create_db_data "key1" "val1";;
   let var2 = Dbmod.create_db_data "key22" "val22";;

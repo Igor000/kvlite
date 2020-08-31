@@ -64,6 +64,19 @@ module M = struct
   let x = 42 
 end;;
 
+module Misc = struct
+
+  (* size of int *)
+  let rec size_of_int x =
+    match (x lsr 1, x land 1) with
+    | 0, n -> n
+    | y, n -> n + size_of_int y  ;;
+
+  (* To test it
+    size_of_int (-1);;
+  *)
+end;;
+
 (*
 module Misc = struct
 
