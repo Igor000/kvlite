@@ -77,6 +77,12 @@ let () =
   print_endline "=========================";;
 
 
+  let file_name = "test1";;
+  let res1 = Dbmod.create_file file_name ;;
+  print_endline ("Create file " ^ file_name);;
+  print_endline "=========================";;
+
+
 (*
 print_endline res2;;
    *)

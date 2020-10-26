@@ -68,6 +68,23 @@ module Dbmod = struct
      let var2 : db_data  = Marshal.from_bytes var_as_bytes  0 in
      var2;;
 
+  let create_file file_name  =
+     (* Creata a file if it doesn't exist *)
+     let fd_file = Unix.openfile file_name [O_RDWR; O_CREAT] 0o600 in  
+
+     (* It doesn't work ??
+     let fd_file = Unix.openfile  ~mode: [Unix.O_RDWR; Unix.O_CREAT]  ~perm: 0o644 file_name in 
+        *)
+
+     Unix.close(fd_file);;
+
+     (*
+  utop # let file = Unix.openfile "test.dat" ~mode: [Unix.O_RDWR; Unix.O_CREAT] ~perm: 0o644 ;;
+val file : Unix.file_descr = <abstr>
+─( 14:33:49 )─< command 16 >────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────{ counter: 0 }─
+utop # Unix.close(file);;
+        *)
+
 end;;
 
 
