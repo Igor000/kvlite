@@ -92,12 +92,27 @@ let () =
   print_endline "=========================";;
 
 
+  (*==========================*)
+
   let var3 = Dbmod.create_db_data "key3" "val3";;
+  print_endline("Created var3 = " ^  Dbmod.print_created var3);;
+
   let bytes_test3 = Dbmod.marshal_to_bytes var3;;
   
-
   let my_file_data2 = Dbmod.open_existing_file file_name2;;
-  let res2 = Dbmod.write_bytes  my_file_data2  bytes_test3;;
+  let res3 = Dbmod.write_bytes  my_file_data2  bytes_test3;;
+  print_endline ("Size of written bytes  = " ^ string_of_int(res3));;
+  print_endline "=========================";;
+
+  let var4 = Dbmod.create_db_data "key40" "val40";;
+  print_endline("Created var4 = " ^  Dbmod.print_created var4);;
+
+  let bytes_test4 = Dbmod.marshal_to_bytes var4;;
+  
+  (*  let my_file_data2 = Dbmod.open_existing_file file_name2;;  *)
+  let res4 = Dbmod.write_bytes  my_file_data2  bytes_test4;;
+  print_endline ("Size of written bytes  = " ^ string_of_int(res4));;
+  print_endline "=========================";;
 
 (*
 print_endline res2;;
