@@ -82,6 +82,22 @@ let () =
   print_endline ("Create file " ^ file_name);;
   print_endline "=========================";;
 
+  let my_file_data = Dbmod.open_existing_file file_name;;
+  let my_str = "Testing1";;
+  let res1 = Dbmod.write_string my_file_data my_str
+
+  let file_name2 = "test_bytes1";;
+  let res2 = Dbmod.create_file file_name2 ;;
+  print_endline ("Create file " ^ file_name2);;
+  print_endline "=========================";;
+
+
+  let var3 = Dbmod.create_db_data "key3" "val3";;
+  let bytes_test3 = Dbmod.marshal_to_bytes var3;;
+  
+
+  let my_file_data2 = Dbmod.open_existing_file file_name2;;
+  let res2 = Dbmod.write_bytes  my_file_data2  bytes_test3;;
 
 (*
 print_endline res2;;

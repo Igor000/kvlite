@@ -1,5 +1,6 @@
 open Base;;
 open Base.Poly;;
+open Printf;;
 
 let add x y = x + y
 
@@ -7,7 +8,7 @@ let sub x y = x - y
 
 type db_data = { created : float; key_size: int; key  : string; value_size : int; value: string }
 type bytes_data = { bytes_size : int; bytes_data  : bytes }
-
+type file_data  = { file_name: string ; fd_file: Unix.file_descr }
 
   (*
    *  In utop to load a module :
@@ -75,15 +76,62 @@ module Dbmod = struct
      (* It doesn't work ??
      let fd_file = Unix.openfile  ~mode: [Unix.O_RDWR; Unix.O_CREAT]  ~perm: 0o644 file_name in 
         *)
-
      Unix.close(fd_file);;
 
+  let close_simple fd_file =
+    Unix.close fd_file;;
+
+  let open_existing_file file_name = 
+     let fd_file = Unix.(openfile file_name  [O_RDWR] 0o600) in
+     { file_name; fd_file };;
+
+  let write_string file_data my_str =
+     (* go to end of data file *)
+     let off = Unix.(lseek file_data.fd_file 0 SEEK_END) in
+     let len = String.length my_str in
+     let written = Unix.write_substring file_data.fd_file my_str 0 len in
+     begin
+       if written <> len then
+         let err_msg =
+           sprintf
+             "Dbmod.write_string: file_data: %s my_str: %s written: %d len: %d"
+             file_data.file_name my_str written len in
+         failwith err_msg
+     end;
+     written;;
+
+  (*
+  let write_bytes file_data my_buffer =
+
+  al single_write : ?⁠restart:bool -> ?⁠pos:int -> ?⁠len:int -> File_descr.t -> buf:Core__.Import.Bytes.t -> int
+     *)
+
+  let write_bytes file_data my_buffer =
+     (* go to end of data file *)
+     let off = Unix.(lseek file_data.fd_file 0 SEEK_END) in
+     let len = Bytes.length my_buffer in
      (*
-  utop # let file = Unix.openfile "test.dat" ~mode: [Unix.O_RDWR; Unix.O_CREAT] ~perm: 0o644 ;;
-val file : Unix.file_descr = <abstr>
-─( 14:33:49 )─< command 16 >────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────{ counter: 0 }─
-utop # Unix.close(file);;
-        *)
+     let written = Unix.write_substring file_data.fd_file my_str 0 len in
+     let written_bytes = Unix.single_write : ?⁠restart:bool -> ?⁠pos:int -> ?⁠len:int -> File_descr.t -> buf:Core__.Import.Bytes.t -> i
+     let written_bytes = Unix.write  ?⁠pos:int -> ?⁠len:int -> File_descr.t -> buf:Core__.Import.Bytes.t -> int*)
+
+
+(*     Unix.single_write fd  ~buf: my_buf  ~pos: 0  ~len:  7  ;; *)
+
+     let written_bytes = Unix.write file_data.fd_file my_buffer 0 len in 
+     begin
+       if written_bytes <> len then
+         let err_msg =
+           sprintf 
+             "Dbmod..write_bytes:" in
+             (*
+             "Dbmod..write_bytes: file_data: %s my_str: %s written_bytes: %d len: %d"
+             file_data.file_name Bytes.to_string(my_buffer) written_bytes len in
+                *)
+         failwith err_msg
+     end;
+     written_bytes;;
+
 
 end;;
 
