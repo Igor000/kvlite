@@ -1,4 +1,4 @@
-(executable 
-  (name test_list)
+(tests       
+  (names test_foo test_list)
   (libraries ounit2)
 )
