@@ -16,3 +16,10 @@ dune exec  ./main.exe
 # To run the executable
 _build/default/main.exe
 
+
+## To build unitest test_list and test_foo
+ocamlfind ocamlc -o test_list -package oUnit -linkpkg -g  test_list.ml
+./test_list
+
+ocamlfind ocamlc -o test_foo -package oUnit -linkpkg -g foo.ml test_foo.ml
+./test_foo 
