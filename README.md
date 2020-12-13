@@ -17,9 +17,34 @@ dune exec  ./main.exe
 _build/default/main.exe
 
 
+
+## To build tests
+cd ./tests
+# Build multiple tests using this dune
+(tests
+  (names test_foo test_list)
+  (libraries ounit2)
+)
+
+
+#####
+dune exec runtest
+
+## execute individual tests
+dune exec ./test_list.exe
+dune exec ./test_foo.exe
+
+
+
 ## To build unitest test_list and test_foo
 ocamlfind ocamlc -o test_list -package oUnit -linkpkg -g  test_list.ml
 ./test_list
 
 ocamlfind ocamlc -o test_foo -package oUnit -linkpkg -g foo.ml test_foo.ml
 ./test_foo 
+
+
+## see example of diff dune files
+in https://github.com/dune-universe/dune-universe/
+## For example
+https://github.com/dune-universe/dune-universe/blob/master/packages/elasticsearch-cli.1.2/src/dune
