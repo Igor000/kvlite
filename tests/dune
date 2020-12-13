@@ -1,0 +1,4 @@
+(executable 
+  (name test_list)
+  (libraries ounit2)
+)
