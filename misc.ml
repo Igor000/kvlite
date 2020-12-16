@@ -99,23 +99,63 @@ module Dbmod = struct
          failwith err_msg
      end;
      written;;
+   
+     (*
+   let raw_read db pos =
+      let off = pos.off in
+      let len = pos.len in
+      let buff = Bytes.create len in
+      let off' = Unix.(lseek db.data off SEEK_SET) in
+      begin
+        if off' <> off then
+          let err_msg =
+            sprintf "Db.Internal.raw_read: db: %s off: %d len: %d off': %d"
+              db.data_fn off len off' in
+          failwith err_msg
+      end;
+      let read = Unix.read db.data buff 0 len in
+      begin
+        if read <> len then
+          let err_msg =
+            sprintf "Db.Internal.raw_read: db: %s off: %d len: %d read: %d"
+              db.data_fn off len read in
+          failwith err_msg
+      end;
+      Bytes.unsafe_to_string buff
+    *)
 
-  (*
-  let write_bytes file_data my_buffer =
-
-  al single_write : ?⁠restart:bool -> ?⁠pos:int -> ?⁠len:int -> File_descr.t -> buf:Core__.Import.Bytes.t -> int
-     *)
-
+   let read_int file_data lseek_offset =
+      let int_len = 8 in   (*  (* TODO hardcoded int size = 8 !! *) *)
+      let my_buffer = Bytes.create int_len  in
+      (* go to offset position in the file*)
+      let offset_new = Unix.(lseek file_data.fd_file lseek_offset SEEK_SET) in
+      begin
+        if offset_new <> lseek_offset then
+          let err_msg =
+            sprintf "Dbmod.read_string: db: %s off: %d  off': %d"
+              file_data.file_name lseek_offset offset_new in
+          failwith err_msg
+      end;
+       
+      let bytes_read = Unix.(read file_data.fd_file my_buffer lseek_offset int_len  ) in
+      begin
+         if bytes_read <> int_len then
+           let err_msg =
+             sprintf "Db.Internal.raw_read: db: %s off: %d len: %d read: %d"
+             file_data.file_name lseek_offset int_len bytes_read in
+           failwith err_msg
+      end;
+      
+      let result : int = Marshal.from_bytes my_buffer  0 in
+      result
+   
+   ;;
+   
   let write_bytes file_data my_buffer =
      (* go to end of data file *)
      let off = Unix.(lseek file_data.fd_file 0 SEEK_END) in
      let len = Bytes.length my_buffer in
-     (*
-     let written = Unix.write_substring file_data.fd_file my_str 0 len in
-     let written_bytes = Unix.single_write : ?⁠restart:bool -> ?⁠pos:int -> ?⁠len:int -> File_descr.t -> buf:Core__.Import.Bytes.t -> i
-     let written_bytes = Unix.write  ?⁠pos:int -> ?⁠len:int -> File_descr.t -> buf:Core__.Import.Bytes.t -> int*)
-
-
+  
 (*     Unix.single_write fd  ~buf: my_buf  ~pos: 0  ~len:  7  ;; *)
 
      let written_bytes = Unix.write file_data.fd_file my_buffer 0 len in 
@@ -132,6 +172,16 @@ module Dbmod = struct
      end;
      written_bytes;;
 
+   let write_int file_data my_int =
+      let int_len = 8 in   (*  TODO hardcoded int size = 8 !! *) 
+      let my_buffer =  marshal_to_bytes  my_int in
+      let wriiten_bytes = write_bytes file_data my_buffer in
+
+      wriiten_bytes;
+   ;;   
+
+      
+     
 
 end;;
 
