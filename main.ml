@@ -77,7 +77,7 @@ let () =
   print_endline "=========================";;
 
 
-  let file_name = "test1";;
+  let file_name = "test1.dat";;
   let res1 = Dbmod.create_file file_name ;;
   print_endline ("Create file " ^ file_name);;
   print_endline "=========================";;
@@ -86,7 +86,7 @@ let () =
   let my_str = "Testing1";;
   let res1 = Dbmod.write_string my_file_data my_str
 
-  let file_name2 = "test_bytes1";;
+  let file_name2 = "test_bytes1.dat";;
   let res2 = Dbmod.create_file file_name2 ;;
   print_endline ("Create file " ^ file_name2);;
   print_endline "=========================";;
