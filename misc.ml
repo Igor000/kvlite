@@ -2,6 +2,8 @@ open Base;;
 open Base.Poly;;
 open Printf;;
 
+module Bytes_stdlib = Stdlib.Bytes
+
 let add x y = x + y
 
 let sub x y = x - y
@@ -146,7 +148,9 @@ module Dbmod = struct
            failwith err_msg
       end;
       
-      let result : int = Marshal.from_bytes my_buffer  0 in
+      let result = Bytes_stdlib.get_int64_ne my_buffer 0 in
+      (* let result : int = Marshal.from_bytes  my_buffer 0  in *)
+      (* Int64.to_int result *)
       result
    
    ;;
@@ -174,7 +178,11 @@ module Dbmod = struct
 
    let write_int file_data my_int =
       let int_len = 8 in   (*  TODO hardcoded int size = 8 !! *) 
-      let my_buffer =  marshal_to_bytes  my_int in
+      (* let my_buffer =  marshal_to_bytes  my_int in   *)
+
+      let my_buffer = Bytes.create int_len  in
+      Bytes_stdlib.set_int64_ne  my_buffer 0  (Int64.of_int my_int);
+
       let wriiten_bytes = write_bytes file_data my_buffer in
 
       wriiten_bytes;

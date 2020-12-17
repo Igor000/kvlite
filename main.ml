@@ -114,6 +114,27 @@ let () =
   print_endline ("Size of written bytes  = " ^ string_of_int(res4));;
   print_endline "=========================";;
 
+  (* ------------------- *)
+  let file_name_int = "test_in1.dat";;
+  let res1 = Dbmod.create_file file_name_int ;;
+  print_endline ("Create file " ^ file_name_int);;
+  print_endline "=========================";;
+
+  let my_file_data_int = Dbmod.open_existing_file file_name_int;;
+  let my_int = 28;;
+  print_endline ("my_int   = " ^ string_of_int(my_int));;
+  let res5 = Dbmod.write_int my_file_data_int my_int;;
+  print_endline ("Result of write_int   = " ^ string_of_int(res5));;
+
+  Dbmod.close_simple my_file_data_int.fd_file ;;
+  let my_file_data_int = Dbmod.open_existing_file file_name_int;;
+  
+  let lseek_offset = 0;;
+  let result6  = Dbmod.read_int my_file_data_int 0 in
+  print_endline ("Result of read_int   = " ^ Int64.to_string result6);;
+
+   
+
 (*
 print_endline res2;;
    *)
