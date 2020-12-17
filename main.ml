@@ -133,7 +133,46 @@ let () =
   let result6  = Dbmod.read_int my_file_data_int 0 in
   print_endline ("Result of read_int   = " ^ Int64.to_string result6);;
 
-   
+ (*-----------------------------*)
+ let file_name_bytes = "test_bytes.dat";;
+ let res1 = Dbmod.create_file file_name_bytes ;;
+ print_endline ("Create file " ^ file_name_bytes);;
+ print_endline "=========================";;
+
+ let my_file_data_bytes = Dbmod.open_existing_file file_name_bytes;;
+ let my_string  = "Testing bytes !!";;
+ print_endline ("my_string   = " ^ my_string);;
+ let res5 = Dbmod.write_bytes my_file_data_bytes (Bytes.of_string my_string);;
+ print_endline ("Result of write_bytes   = " ^ string_of_int(res5));;
+
+ Dbmod.close_simple my_file_data_bytes.fd_file ;;
+ let my_file_data_bytes = Dbmod.open_existing_file file_name_bytes;;
+ 
+ let lseek_offset = 0;;
+ let result6  = Dbmod.read_bytes my_file_data_bytes 0  (Int64.of_int(String.length my_string) )in
+ print_endline ("Result of read_bytes   = " ^ Bytes.to_string result6);;
+
+  (*-----------------------------*)
+  
+  let file_name_full = "test_full_record.dat";;
+  let res1 = Dbmod.create_file file_name_full ;;
+  print_endline ("Create file " ^ file_name_full);;
+  let my_file_data_full = Dbmod.open_existing_file file_name_full;;
+  print_endline "=========================";;
+  let my_string = "Just a test!";;
+  print_endline ("Before read_full_record my_string = " ^  my_string);;
+  let result7  = Dbmod.write_full_record my_file_data_full Bytes.(of_string my_string);;
+
+  print_endline ("Result of write_full_record   = " ^ string_of_int( result7));;
+
+  Dbmod.close_simple my_file_data_full.fd_file ;;
+  let my_file_data_full = Dbmod.open_existing_file file_name_full;;
+
+  let lseek_offset = 0;;
+  let result_bytes = Dbmod.read_full_record my_file_data_full lseek_offset;;
+  print_endline ("After read_full_record " ^  (Bytes.to_string result_bytes));;
+
+
 
 (*
 print_endline res2;;

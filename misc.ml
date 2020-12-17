@@ -3,6 +3,7 @@ open Base.Poly;;
 open Printf;;
 
 module Bytes_stdlib = Stdlib.Bytes
+module Option_stdlib = Stdlib.Option
 
 let add x y = x + y
 
@@ -162,6 +163,7 @@ module Dbmod = struct
   
 (*     Unix.single_write fd  ~buf: my_buf  ~pos: 0  ~len:  7  ;; *)
 
+     (* Write  *)
      let written_bytes = Unix.write file_data.fd_file my_buffer 0 len in 
      begin
        if written_bytes <> len then
@@ -188,8 +190,61 @@ module Dbmod = struct
       wriiten_bytes;
    ;;   
 
-      
-     
+   
+   let write_full_record file_data my_buffer =
+      let res5 = write_int file_data (Bytes.length my_buffer) in
+      begin 
+        print_endline ("Result of write_int   = " ^ string_of_int(res5)); 
+      end;
+      let res3 = write_bytes file_data my_buffer in
+      begin 
+         print_endline ("Result of write_bytes   = " ^ string_of_int(res3)); 
+       end;
+      res3 + res5;  
+   ;;
+
+   let get_exn = function
+  | Some x -> x
+  | None   -> raise (Invalid_argument "Option.get");;
+
+   let read_bytes file_data lseek_offset bytes_len64 =
+
+      let bytes_len = get_exn(Int64.to_int bytes_len64) in
+      let my_buffer = Bytes.create bytes_len  in
+      (* go to offset position in the file*)
+      let offset_new = Unix.(lseek file_data.fd_file lseek_offset SEEK_SET) in
+      begin
+        if offset_new <> lseek_offset then
+          let err_msg =
+            sprintf "Dbmod.read_bytes: db: %s off: %d  off': %d"
+              file_data.file_name lseek_offset offset_new in
+          failwith err_msg
+      end;
+
+      print_endline ("lseek_offset    = " ^ string_of_int(lseek_offset));
+      print_endline ("bytes_len    = " ^ string_of_int(bytes_len));
+      print_endline ("offset_new    = " ^ string_of_int(offset_new));
+       
+      (*   TODO !!
+      let bytes_read = Unix.(read file_data.fd_file my_buffer lseek_offset bytes_len  ) in
+ 
+      begin
+         if bytes_read <> bytes_len then
+           let err_msg =
+             sprintf "Dbmod.read_bytes: db: %s off: %d len: %d read: %d"
+             file_data.file_name lseek_offset bytes_len bytes_read in
+           failwith err_msg
+      end;
+      *) 
+
+      my_buffer
+ 
+   ;;
+
+   let read_full_record file_data lseek_offset =
+     let result_int = read_int file_data lseek_offset in
+     let result_binary = read_bytes  file_data (lseek_offset + 8) result_int in
+     result_binary
 
 end;;
 
