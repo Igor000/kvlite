@@ -320,10 +320,10 @@ module Dbmod = struct
 
 
    let read_full_record_current_pos file_data  =
+     let curr_pos = get_current_pos file_data in 
      let result_int = read_int_current_pos file_data in
-     (* let result_int = read_int file_data lseek_offset in *)
      let result_binary = read_bytes_current_pos  file_data result_int in
-     result_binary
+     (result_binary, curr_pos, result_int)
 
 end;;
 
