@@ -140,7 +140,7 @@ module Dbmod = struct
           failwith err_msg
       end;
        
-      let bytes_read = Unix.(read file_data.fd_file my_buffer lseek_offset int_len  ) in
+      let bytes_read = (Unix.read file_data.fd_file my_buffer 0 int_len  ) in
       begin
          if bytes_read <> int_len then
            let err_msg =
@@ -201,6 +201,11 @@ module Dbmod = struct
          print_endline ("Result of write_bytes   = " ^ string_of_int(res3)); 
        end;
       res3 + res5;  
+   ;;
+
+   let get_current_pos file_data = 
+       let result = Unix.(lseek file_data.fd_file 0 SEEK_CUR) in
+       result
    ;;
 
    let get_exn = function
