@@ -126,12 +126,38 @@ let () =
   let res5 = Dbmod.write_int my_file_data_int my_int;;
   print_endline ("Result of write_int   = " ^ string_of_int(res5));;
 
+  let cur_pos = Dbmod.get_current_pos my_file_data_int in 
+  print_endline ("Curr pos after write_int   = " ^ string_of_int(cur_pos ));;
+
+  let my_int2 = 34;;
+  print_endline ("my_int2   = " ^ string_of_int(my_int2));;
+  let res5 = Dbmod.write_int my_file_data_int my_int2;;
+  print_endline ("Result of write_int   = " ^ string_of_int(res5));;
+
+  let cur_pos = Dbmod.get_current_pos my_file_data_int in 
+  print_endline ("Curr pos after write_int   = " ^ string_of_int(cur_pos ));;
+
   Dbmod.close_simple my_file_data_int.fd_file ;;
+
+  (*   ********************   *)
   let my_file_data_int = Dbmod.open_existing_file file_name_int;;
   
+  let cur_pos = Dbmod.get_current_pos my_file_data_int in 
+  print_endline ("Curr pos before read_int   = " ^ string_of_int(cur_pos ));;
   let lseek_offset = 0;;
-  let result6  = Dbmod.read_int my_file_data_int 0 in
+  let result6  = Dbmod.read_int my_file_data_int lseek_offset in
   print_endline ("Result of read_int   = " ^ Int64.to_string result6);;
+
+
+  let cur_pos = Dbmod.get_current_pos my_file_data_int in 
+  print_endline ("Curr pos after read_int   = " ^ string_of_int(cur_pos ));;
+
+  let lseek_offset = 8;;
+  let result6  = Dbmod.read_int my_file_data_int lseek_offset in
+  print_endline ("Result of read_int2   = " ^ Int64.to_string result6);;
+
+  let cur_pos = Dbmod.get_current_pos my_file_data_int in 
+  print_endline ("Curr pos after read_int 2  = " ^ string_of_int(cur_pos ));;
 
  (*-----------------------------*)
  let file_name_bytes = "test_bytes.dat";;
