@@ -175,7 +175,8 @@ let () =
  let my_file_data_bytes = Dbmod.open_existing_file file_name_bytes;;
  
  let lseek_offset = 0;;
- let result6  = Dbmod.read_bytes my_file_data_bytes 0  (Int64.of_int(String.length my_string) )in
+ (* let result6  = Dbmod.read_bytes my_file_data_bytes 0  (Int64.of_int(String.length my_string) )in *)
+ let result6  = Dbmod.read_bytes_current_pos my_file_data_bytes   (Int64.of_int(String.length my_string) )in
  print_endline ("Result of read_bytes   = " ^ Bytes.to_string result6);;
 
   (*-----------------------------*)
@@ -191,14 +192,93 @@ let () =
 
   print_endline ("Result of write_full_record   = " ^ string_of_int( result7));;
 
+
+  let my_string = "Another test record!";;
+  print_endline ("Before read_full_record my_string = " ^  my_string);;
+  let result7  = Dbmod.write_full_record my_file_data_full Bytes.(of_string my_string);;
+  print_endline ("Result of write_full_record   = " ^ string_of_int( result7));;
+
+  let my_string = "test record ## 3";;
+  print_endline ("Before read_full_record my_string = " ^  my_string);;
+  let result7  = Dbmod.write_full_record my_file_data_full Bytes.(of_string my_string);;
+  print_endline ("Result of write_full_record   = " ^ string_of_int( result7));;
+
   Dbmod.close_simple my_file_data_full.fd_file ;;
   let my_file_data_full = Dbmod.open_existing_file file_name_full;;
 
-  let lseek_offset = 0;;
-  let result_bytes = Dbmod.read_full_record my_file_data_full lseek_offset;;
+  (*  ===================   *)
+  let result_bytes = Dbmod.read_full_record_current_pos my_file_data_full ;;
   print_endline ("After read_full_record " ^  (Bytes.to_string result_bytes));;
 
 
+  let result_bytes = Dbmod.read_full_record_current_pos my_file_data_full ;;
+  print_endline ("After read_full_record " ^  (Bytes.to_string result_bytes));;
+
+  let result_bytes = Dbmod.read_full_record_current_pos my_file_data_full ;;
+  print_endline ("After read_full_record " ^  (Bytes.to_string result_bytes));;
+
+(* ********************** *)
+let var1 = Dbmod.create_db_data "key1" "val1";;
+let var2 = Dbmod.create_db_data "key2" "val2";;
+let var3 = Dbmod.create_db_data "key3_3" "val3_3";;
+
+
+let res1, res2 = Dbmod.get_key_value var1 in 
+print_endline (res1 ^ " " ^ res2 );;
+print_endline("Created var1 = " ^  Dbmod.print_created var1);;
+
+let res1, res2 = Dbmod.get_key_value var2 in 
+print_endline (res1 ^ " " ^ res2 );;
+print_endline("Created var2 = " ^  Dbmod.print_created var2);;
+
+let res1, res2 = Dbmod.get_key_value var3 in 
+print_endline (res1 ^ " " ^ res2 );;
+print_endline("Created var3 = " ^  Dbmod.print_created var3);;
+
+
+let file_name_full = "test_full_record2.dat";;
+let res1 = Dbmod.create_file file_name_full ;;
+print_endline ("Create file " ^ file_name_full);;
+let my_file_data_full = Dbmod.open_existing_file file_name_full;;
+print_endline "=========================";;
+
+let result1  = Dbmod.write_full_record my_file_data_full (Dbmod.marshal_to_bytes var1);;
+let result2  = Dbmod.write_full_record my_file_data_full (Dbmod.marshal_to_bytes var2);;
+let result3  = Dbmod.write_full_record my_file_data_full (Dbmod.marshal_to_bytes var3);;
+
+print_endline ("Result of write_full_record   = " ^ string_of_int( result1));;
+print_endline ("Result of write_full_record   = " ^ string_of_int( result2));;
+print_endline ("Result of write_full_record   = " ^ string_of_int( result3));;
+
+Dbmod.close_simple my_file_data_full.fd_file ;;
+let my_file_data_full = Dbmod.open_existing_file file_name_full;;
+
+  (*  ===================   *)
+let var1_1 = Dbmod.marshal_from_bytes (Dbmod.read_full_record_current_pos my_file_data_full );;
+let var2_1 = Dbmod.marshal_from_bytes (Dbmod.read_full_record_current_pos my_file_data_full );;
+let var3_1 = Dbmod.marshal_from_bytes (Dbmod.read_full_record_current_pos my_file_data_full );;
+
+
+let res1, res2 = Dbmod.get_key_value var1_1 in 
+print_endline (res1 ^ " " ^ res2 );;
+print_endline("Created var1 = " ^  Dbmod.print_created var1_1);;
+
+let res1, res2 = Dbmod.get_key_value var2_1 in 
+print_endline (res1 ^ " " ^ res2 );;
+print_endline("Created var2 = " ^  Dbmod.print_created var2_1);;
+
+let res1, res2 = Dbmod.get_key_value var3_1 in 
+print_endline (res1 ^ " " ^ res2 );;
+print_endline("Created var3 = " ^  Dbmod.print_created var3_1);;
+
+(*
+ 
+
+let var1_1 = Dbmod.marshal_from_bytes var_bytes1;;
+let var2_1 = Dbmod.marshal_from_bytes var_bytes2;;
+
+
+*)
 
 (*
 print_endline res2;;

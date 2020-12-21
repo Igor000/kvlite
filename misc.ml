@@ -88,6 +88,11 @@ module Dbmod = struct
      let fd_file = Unix.(openfile file_name  [O_RDWR] 0o600) in
      { file_name; fd_file };;
 
+  let get_current_pos file_data = 
+      let result = Unix.(lseek file_data.fd_file 0 SEEK_CUR) in
+      result
+  ;;
+
   let write_string file_data my_str =
      (* go to end of data file *)
      let off = Unix.(lseek file_data.fd_file 0 SEEK_END) in
@@ -155,6 +160,39 @@ module Dbmod = struct
       result
    
    ;;
+
+   
+   let read_int_current_pos file_data   =
+      let int_len = 8 in   (*  (* TODO hardcoded int size = 8 !! *) *)
+      let my_buffer = Bytes.create int_len  in
+
+      (*
+      (* go to offset position in the file*)
+      let offset_new = Unix.(lseek file_data.fd_file lseek_offset SEEK_SET) in
+      begin
+        if offset_new <> lseek_offset then
+          let err_msg =
+            sprintf "Dbmod.read_string: db: %s off: %d  off': %d"
+              file_data.file_name lseek_offset offset_new in
+          failwith err_msg
+      end;
+       *)
+      let bytes_read = (Unix.read file_data.fd_file my_buffer 0 int_len  ) in
+      begin
+         if bytes_read <> int_len then
+           let err_msg =
+             sprintf "Db.Internal.raw_read: db: %s off: %d len: %d read: %d"
+             file_data.file_name (get_current_pos file_data) int_len bytes_read in
+           failwith err_msg
+      end;
+      
+      let result = Bytes_stdlib.get_int64_ne my_buffer 0 in
+      (* let result : int = Marshal.from_bytes  my_buffer 0  in *)
+      (* Int64.to_int result *)
+      result
+   
+   ;;
+   
    
   let write_bytes file_data my_buffer =
      (* go to end of data file *)
@@ -203,10 +241,7 @@ module Dbmod = struct
       res3 + res5;  
    ;;
 
-   let get_current_pos file_data = 
-       let result = Unix.(lseek file_data.fd_file 0 SEEK_CUR) in
-       result
-   ;;
+
 
    let get_exn = function
   | Some x -> x
@@ -230,8 +265,8 @@ module Dbmod = struct
       print_endline ("bytes_len    = " ^ string_of_int(bytes_len));
       print_endline ("offset_new    = " ^ string_of_int(offset_new));
        
-      (*   TODO !!
-      let bytes_read = Unix.(read file_data.fd_file my_buffer lseek_offset bytes_len  ) in
+      (* *)
+      let bytes_read = Unix.(read file_data.fd_file my_buffer 0 bytes_len  ) in
  
       begin
          if bytes_read <> bytes_len then
@@ -240,15 +275,54 @@ module Dbmod = struct
              file_data.file_name lseek_offset bytes_len bytes_read in
            failwith err_msg
       end;
-      *) 
+      (* *) 
 
       my_buffer
  
    ;;
 
-   let read_full_record file_data lseek_offset =
-     let result_int = read_int file_data lseek_offset in
-     let result_binary = read_bytes  file_data (lseek_offset + 8) result_int in
+   let read_bytes_current_pos file_data bytes_len64 =
+
+      let bytes_len = get_exn(Int64.to_int bytes_len64) in
+      let my_buffer = Bytes.create bytes_len  in
+      (* go to offset position in the file*)
+      (*
+      let offset_new = Unix.(lseek file_data.fd_file lseek_offset SEEK_SET) in
+      begin
+        if offset_new <> lseek_offset then
+          let err_msg =
+            sprintf "Dbmod.read_bytes: db: %s off: %d  off': %d"
+              file_data.file_name lseek_offset offset_new in
+          failwith err_msg
+      end;
+
+      print_endline ("lseek_offset    = " ^ string_of_int(lseek_offset));   
+      print_endline ("bytes_len    = " ^ string_of_int(bytes_len));
+      print_endline ("offset_new    = " ^ string_of_int(offset_new));
+      *)
+       
+      (* *)
+      let bytes_read = Unix.(read file_data.fd_file my_buffer 0 bytes_len  ) in
+ 
+      begin
+         if bytes_read <> bytes_len then
+           let err_msg =
+             sprintf "Dbmod.read_bytes: db: %s off: %d len: %d read: %d"
+             file_data.file_name (get_current_pos file_data) bytes_len bytes_read in
+           failwith err_msg
+      end;
+      (* *) 
+
+      my_buffer
+ 
+   ;;
+
+
+
+   let read_full_record_current_pos file_data  =
+     let result_int = read_int_current_pos file_data in
+     (* let result_int = read_int file_data lseek_offset in *)
+     let result_binary = read_bytes_current_pos  file_data result_int in
      result_binary
 
 end;;
