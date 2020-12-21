@@ -48,3 +48,14 @@ ocamlfind ocamlc -o test_foo -package oUnit -linkpkg -g foo.ml test_foo.ml
 in https://github.com/dune-universe/dune-universe/
 ## For example
 https://github.com/dune-universe/dune-universe/blob/master/packages/elasticsearch-cli.1.2/src/dune
+
+## utop commands
+
+#list;;      ## display all available modules
+open Base;;  ## opens Base 
+open Core;;  ## opens Core
+
+#use "misc.ml";;      ## load misc.ml as a module
+#mod_use "main.ml";;  ## load a file / not a module
+
+#load "unix.cma";;    ## load Unix module
