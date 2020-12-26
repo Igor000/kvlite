@@ -5,13 +5,21 @@ open Printf;;
 module Bytes_stdlib = Stdlib.Bytes
 module Option_stdlib = Stdlib.Option
 
+module Ht = Stdlib.Hashtbl
+
 let add x y = x + y
 
 let sub x y = x - y
 
 type db_data = { created : float; key_size: int; key  : string; value_size : int; value: string }
 type bytes_data = { bytes_size : int; bytes_data  : bytes }
-type file_data  = { file_name: string ; fd_file: Unix.file_descr }
+type file_data  = { file_name: string ; 
+                    fd_file: Unix.file_descr;
+                    file_name_index: string }
+(*
+                    index: (string, int) Ht.t }
+*)
+
 
   (*
    *  In utop to load a module :
@@ -81,12 +89,17 @@ module Dbmod = struct
         *)
      Unix.close(fd_file);;
 
+
   let close_simple fd_file =
     Unix.close fd_file;;
 
   let open_existing_file file_name = 
+     let my_hash = Stdlib.Hashtbl.create 1024 in
      let fd_file = Unix.(openfile file_name  [O_RDWR] 0o600) in
-     { file_name; fd_file };;
+     let file_name_index = file_name ^ ".idx" in
+   (*  { file_name; fd_file };; *)
+     { file_name; fd_file; file_name_index };;  
+   
 
   let get_current_pos file_data = 
       let result = Unix.(lseek file_data.fd_file 0 SEEK_CUR) in
