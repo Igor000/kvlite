@@ -21,6 +21,7 @@ type file_data  = { file_name: string ;
 *)
 
 
+
   (*
    *  In utop to load a module :
    #use "./misc.ml";;
@@ -95,11 +96,13 @@ module Dbmod = struct
 
   let open_existing_file file_name = 
      let my_hash = Stdlib.Hashtbl.create 1024 in
+     let () = Stdlib.Hashtbl.add my_hash "test" 0 in
      let fd_file = Unix.(openfile file_name  [O_RDWR] 0o600) in
      let file_name_index = file_name ^ ".idx" in
-   (*  { file_name; fd_file };; *)
-     { file_name; fd_file; file_name_index };;  
-   
+     { file_name; fd_file; file_name_index};;  
+     (*
+     { file_name; fd_file; file_name_index; my_hash };;  
+     *)
 
   let get_current_pos file_data = 
       let result = Unix.(lseek file_data.fd_file 0 SEEK_CUR) in
