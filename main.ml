@@ -188,20 +188,20 @@ let () =
   print_endline "=========================";;
   let my_string = "Just a test!";;
   print_endline ("Before read_full_record my_string = " ^  my_string);;
-  let result7  = Dbmod.write_full_record my_file_data_full Bytes.(of_string my_string);;
+  let result7, start_pos  = Dbmod.write_full_record my_file_data_full Bytes.(of_string my_string);;
 
-  print_endline ("Result of write_full_record   = " ^ string_of_int( result7));;
+  print_endline ("Result of write_full_record   = " ^ string_of_int( result7) ^ " start_pos =" ^ string_of_int( start_pos));;
 
 
   let my_string = "Another test record!";;
   print_endline ("Before read_full_record my_string = " ^  my_string);;
-  let result7  = Dbmod.write_full_record my_file_data_full Bytes.(of_string my_string);;
-  print_endline ("Result of write_full_record   = " ^ string_of_int( result7));;
+  let result7, start_pos  = Dbmod.write_full_record my_file_data_full Bytes.(of_string my_string);;
+  print_endline ("Result of write_full_record   = " ^ string_of_int( result7) ^ " start_pos =" ^ string_of_int( start_pos));;
 
   let my_string = "test record ## 3";;
   print_endline ("Before read_full_record my_string = " ^  my_string);;
-  let result7  = Dbmod.write_full_record my_file_data_full Bytes.(of_string my_string);;
-  print_endline ("Result of write_full_record   = " ^ string_of_int( result7));;
+  let result7, start_pos  = Dbmod.write_full_record my_file_data_full Bytes.(of_string my_string);;
+  print_endline ("Result of write_full_record   = " ^ string_of_int( result7) ^ " start_pos =" ^ string_of_int( start_pos));;
 
   Dbmod.close_simple my_file_data_full.fd_file ;;
   let my_file_data_full = Dbmod.open_existing_file file_name_full;;
@@ -242,13 +242,13 @@ print_endline ("Create file " ^ file_name_full);;
 let my_file_data_full = Dbmod.open_existing_file file_name_full;;
 print_endline "=========================";;
 
-let result1  = Dbmod.write_full_record my_file_data_full (Dbmod.marshal_to_bytes var1);;
-let result2  = Dbmod.write_full_record my_file_data_full (Dbmod.marshal_to_bytes var2);;
-let result3  = Dbmod.write_full_record my_file_data_full (Dbmod.marshal_to_bytes var3);;
+let result1, start_pos1  = Dbmod.write_full_record my_file_data_full (Dbmod.marshal_to_bytes var1);;
+let result2, start_pos2  = Dbmod.write_full_record my_file_data_full (Dbmod.marshal_to_bytes var2);;
+let result3, start_pos3  = Dbmod.write_full_record my_file_data_full (Dbmod.marshal_to_bytes var3);;
 
-print_endline ("Result of write_full_record   = " ^ string_of_int( result1));;
-print_endline ("Result of write_full_record   = " ^ string_of_int( result2));;
-print_endline ("Result of write_full_record   = " ^ string_of_int( result3));;
+print_endline ("Result of write_full_record   = " ^ string_of_int( result1) ^ " start_pos =" ^ string_of_int( start_pos1));;
+print_endline ("Result of write_full_record   = " ^ string_of_int( result2) ^ " start_pos =" ^ string_of_int( start_pos2));;
+print_endline ("Result of write_full_record   = " ^ string_of_int( result3) ^ " start_pos =" ^ string_of_int( start_pos3));;
 
 Dbmod.close_simple my_file_data_full.fd_file ;;
 let my_file_data_full = Dbmod.open_existing_file file_name_full;;
@@ -268,9 +268,9 @@ let var3_1 = Dbmod.read_full_record_current_pos my_file_data_full |> Dbmod.marsh
 let var1_tuple = Dbmod.read_full_record_current_pos my_file_data_full in
 let (var1_data, start_pos1, bytes_size1 ) = var1_tuple in
 let var1_1 = Dbmod.marshal_from_bytes var1_data in 
-let res1, res2 = Dbmod.get_key_value var1_1 in 
+let key1, val1 = Dbmod.get_key_value var1_1 in 
 begin
-  print_endline (res1 ^ " " ^ res2 );
+  print_endline ("key = " ^ key1  ^ " value = " ^ val1 );
   print_endline("Created var1 = " ^  Dbmod.print_created var1_1);
   print_endline("Start pos = " ^  string_of_int(start_pos1) ^ " byte_size = " ^ Int64.to_string(bytes_size1) );
 end;
@@ -278,9 +278,9 @@ end;
 let var2_tuple = Dbmod.read_full_record_current_pos my_file_data_full in
 let (var2_data, start_pos2, bytes_size2 ) = var2_tuple in
 let var2_1 = Dbmod.marshal_from_bytes var2_data in
-let res1, res2 = Dbmod.get_key_value var2_1 in 
+let key2, val2  = Dbmod.get_key_value var2_1 in 
 begin
-  print_endline (res1 ^ " " ^ res2 ); 
+  print_endline ("key = " ^ key2  ^ " value = " ^ val2 );
   print_endline("Created var2 = " ^  Dbmod.print_created var2_1); 
   print_endline("Start pos = " ^  string_of_int(start_pos2) ^ " byte_size = " ^ Int64.to_string(bytes_size2) );
 end;
@@ -288,9 +288,9 @@ end;
 let var3_tuple = Dbmod.read_full_record_current_pos my_file_data_full in
 let (var3_data, start_pos3, bytes_size3 ) = var3_tuple in
 let var3_1 = Dbmod.marshal_from_bytes var3_data in
-let res1, res2 = Dbmod.get_key_value var3_1 in 
+let key3, val3 = Dbmod.get_key_value var3_1 in 
 begin
-  print_endline (res1 ^ " " ^ res2 );
+  print_endline ("key = " ^ key3  ^ " value = " ^ val3 );
   print_endline("Created var3 = " ^  Dbmod.print_created var3_1);
   print_endline("Start pos = " ^  string_of_int(start_pos3) ^ " byte_size = " ^ Int64.to_string(bytes_size3) );
 end;
