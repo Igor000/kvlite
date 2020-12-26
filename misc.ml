@@ -230,6 +230,7 @@ module Dbmod = struct
 
    
    let write_full_record file_data my_buffer =
+      let curr_pos = get_current_pos file_data in 
       let res5 = write_int file_data (Bytes.length my_buffer) in
       begin 
         print_endline ("Result of write_int   = " ^ string_of_int(res5)); 
@@ -238,7 +239,8 @@ module Dbmod = struct
       begin 
          print_endline ("Result of write_bytes   = " ^ string_of_int(res3)); 
        end;
-      res3 + res5;  
+       (* Ht.add db.index k { off; len }   *)
+      (res3 + res5, curr_pos);  
    ;;
 
 
