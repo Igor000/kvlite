@@ -59,3 +59,13 @@ open Core;;  ## opens Core
 #mod_use "main.ml";;  ## load a file / not a module
 
 #load "unix.cma";;    ## load Unix module
+
+
+## Displaying the interface of a module
+## See https://ocaml.org/learn/tutorials/modules.html
+
+#show  Hashtbl;;
+#show  Stdlib.Bytes;;
+
+## To store algebraic data types in Hashtable
+https://stackoverflow.com/questions/8962895/hashtables-in-ocaml 
