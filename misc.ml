@@ -13,16 +13,13 @@ let sub x y = x - y
 
 type db_data = { created : float; key_size: int; key  : string; value_size : int; value: string }
 type bytes_data = { bytes_size : int; bytes_data  : bytes }
-type file_data  = { file_name: string ; 
-                    fd_file: Unix.file_descr;
-                    file_name_index: string }
 
- (*                   
-type file_data_2  = { file_name: string ; 
+                 
+type file_data  = { file_name: string ; 
                       fd_file: Unix.file_descr;
                       file_name_index: string ;                
                       index_map: (string, int) Ht.t }
-*)
+
 
 type db = { data_fn: string;
            index_fn: string;
@@ -113,27 +110,21 @@ module Dbmod = struct
      let fd_file_index = Unix.openfile file_name_index [O_RDWR; O_CREAT] 0o600 in  
      (* Unix.close(fd_file) ;  *)
      Unix.close(fd_file_index) ;
-     let index = Ht.create 11 in
-     (*
-     let my_hash : (string, int) Ht.t = Ht.create 1024 in 
-     *)
+    
+     let index_map : (string, int) Ht.t = Ht.create 1024 in 
+     
 
-     { file_name; fd_file; file_name_index };;  
+     { file_name; fd_file; file_name_index; index_map };;  
 
 
   let close_simple fd_file =
     Unix.close fd_file;;
 
   let open_existing_file file_name = 
-   (*
-     let my_hash = Stdlib.Hashtbl.create 1024 in
-     let () = Stdlib.Hashtbl.add my_hash "test" 0 in
-   *)
      let fd_file = Unix.(openfile file_name  [O_RDWR] 0o600) in
      let file_name_index = file_name ^ ".idx" in
-     let my_hash : (string, int) Ht.t = Ht.create 1024 in 
-     let () = Stdlib.Hashtbl.add my_hash "test" 0 in
-     { file_name; fd_file; file_name_index };;  
+     let index_map : (string, int) Ht.t = Ht.create 1024 in 
+     { file_name; fd_file; file_name_index; index_map };;  
 
 
   let get_current_pos file_data = 
@@ -156,31 +147,7 @@ module Dbmod = struct
      end;
      written;;
    
-     (*
-   let raw_read db pos =
-      let off = pos.off in
-      let len = pos.len in
-      let buff = Bytes.create len in
-      let off' = Unix.(lseek db.data off SEEK_SET) in
-      begin
-        if off' <> off then
-          let err_msg =
-            sprintf "Db.Internal.raw_read: db: %s off: %d len: %d off': %d"
-              db.data_fn off len off' in
-          failwith err_msg
-      end;
-      let read = Unix.read db.data buff 0 len in
-      begin
-        if read <> len then
-          let err_msg =
-            sprintf "Db.Internal.raw_read: db: %s off: %d len: %d read: %d"
-              db.data_fn off len read in
-          failwith err_msg
-      end;
-      Bytes.unsafe_to_string buff
-    *)
-
-   let read_int file_data lseek_offset =
+  let read_int file_data lseek_offset =
       let int_len = 8 in   (*  (* TODO hardcoded int size = 8 !! *) *)
       let my_buffer = Bytes.create int_len  in
       (* go to offset position in the file*)
@@ -214,17 +181,6 @@ module Dbmod = struct
       let int_len = 8 in   (*  (* TODO hardcoded int size = 8 !! *) *)
       let my_buffer = Bytes.create int_len  in
 
-      (*
-      (* go to offset position in the file*)
-      let offset_new = Unix.(lseek file_data.fd_file lseek_offset SEEK_SET) in
-      begin
-        if offset_new <> lseek_offset then
-          let err_msg =
-            sprintf "Dbmod.read_string: db: %s off: %d  off': %d"
-              file_data.file_name lseek_offset offset_new in
-          failwith err_msg
-      end;
-       *)
       let bytes_read = (Unix.read file_data.fd_file my_buffer 0 int_len  ) in
       begin
          if bytes_read <> int_len then
@@ -335,23 +291,7 @@ module Dbmod = struct
 
       let bytes_len = get_exn(Int64.to_int bytes_len64) in
       let my_buffer = Bytes.create bytes_len  in
-      (* go to offset position in the file*)
-      (*
-      let offset_new = Unix.(lseek file_data.fd_file lseek_offset SEEK_SET) in
-      begin
-        if offset_new <> lseek_offset then
-          let err_msg =
-            sprintf "Dbmod.read_bytes: db: %s off: %d  off': %d"
-              file_data.file_name lseek_offset offset_new in
-          failwith err_msg
-      end;
 
-      print_endline ("lseek_offset    = " ^ string_of_int(lseek_offset));   
-      print_endline ("bytes_len    = " ^ string_of_int(bytes_len));
-      print_endline ("offset_new    = " ^ string_of_int(offset_new));
-      *)
-       
-      (* *)
       let bytes_read = Unix.(read file_data.fd_file my_buffer 0 bytes_len  ) in
  
       begin
