@@ -16,9 +16,19 @@ type bytes_data = { bytes_size : int; bytes_data  : bytes }
 type file_data  = { file_name: string ; 
                     fd_file: Unix.file_descr;
                     file_name_index: string }
-(*
-                    index: (string, int) Ht.t }
+
+ (*                   
+type file_data_2  = { file_name: string ; 
+                      fd_file: Unix.file_descr;
+                      file_name_index: string ;                
+                      index_map: (string, int) Ht.t }
 *)
+
+type db = { data_fn: string;
+           index_fn: string;
+           data: Unix.file_descr;
+           index: (string, int ) Ht.t }
+          
 
 
 
@@ -81,28 +91,50 @@ module Dbmod = struct
      let var2 : db_data  = Marshal.from_bytes var_as_bytes  0 in
      var2;;
 
+  let create fn =
+    let data_fn = fn in
+    let index_fn = fn ^ ".idx" in
+    let data =
+      Unix.(openfile data_fn [O_RDWR; O_CREAT; O_EXCL] 0o600) in
+    (* we just check there is not already an index file *)
+    let index_file =
+      Unix.(openfile index_fn [O_RDWR; O_CREAT; O_EXCL] 0o600) in
+    Unix.close index_file;
+    let index = Ht.create 11 in
+    { data_fn; index_fn; data; index }
+
   let create_file file_name  =
      (* Creata a file if it doesn't exist *)
      let fd_file = Unix.openfile file_name [O_RDWR; O_CREAT] 0o600 in  
 
-     (* It doesn't work ??
-     let fd_file = Unix.openfile  ~mode: [Unix.O_RDWR; Unix.O_CREAT]  ~perm: 0o644 file_name in 
-        *)
-     Unix.close(fd_file);;
+     (* Unix.close(fd_file) in   *)
+
+     let file_name_index = file_name ^ ".idx" in
+     let fd_file_index = Unix.openfile file_name_index [O_RDWR; O_CREAT] 0o600 in  
+     (* Unix.close(fd_file) ;  *)
+     Unix.close(fd_file_index) ;
+     let index = Ht.create 11 in
+     (*
+     let my_hash : (string, int) Ht.t = Ht.create 1024 in 
+     *)
+
+     { file_name; fd_file; file_name_index };;  
 
 
   let close_simple fd_file =
     Unix.close fd_file;;
 
   let open_existing_file file_name = 
+   (*
      let my_hash = Stdlib.Hashtbl.create 1024 in
      let () = Stdlib.Hashtbl.add my_hash "test" 0 in
+   *)
      let fd_file = Unix.(openfile file_name  [O_RDWR] 0o600) in
      let file_name_index = file_name ^ ".idx" in
-     { file_name; fd_file; file_name_index};;  
-     (*
-     { file_name; fd_file; file_name_index; my_hash };;  
-     *)
+     let my_hash : (string, int) Ht.t = Ht.create 1024 in 
+     let () = Stdlib.Hashtbl.add my_hash "test" 0 in
+     { file_name; fd_file; file_name_index };;  
+
 
   let get_current_pos file_data = 
       let result = Unix.(lseek file_data.fd_file 0 SEEK_CUR) in

@@ -295,28 +295,15 @@ begin
   print_endline("Start pos = " ^  string_of_int(start_pos3) ^ " byte_size = " ^ Int64.to_string(bytes_size3) );
 end;
 
-(*
-let var3_tuple = Dbmod.read_full_record_current_pos my_file_data_full in
-let (var3_data, start_pos3, bytes_size3 ) = var3_tuple in
-let var3_1 = Dbmod.marshal_from_bytes var3_data in
-let res1, res2 = Dbmod.get_key_value var3_1 in 
+(****************** *)
 
-print_endline (res1 ^ " " ^ res2 );;
-print_endline("Created var3 = " ^  Dbmod.print_created var3_1);;
-*)
-
-(*
- 
-
-let var1_1 = Dbmod.marshal_from_bytes var_bytes1;;
-let var2_1 = Dbmod.marshal_from_bytes var_bytes2;;
+let file_name = "test_create.dat" in
+  let res1 = Dbmod.create file_name in
+  print_endline ("Create file " ^ file_name);
+  print_endline ("=========================");
 
 
-*)
 
-(*
-print_endline res2;;
-   *)
 
 (*
 M.x;;
