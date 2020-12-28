@@ -330,6 +330,16 @@ begin
 end;
 (****************** *)
 
+
+let start_pos = 0 in
+Dbmod.get_full_record_and_print my_file_data_full start_pos;
+
+let start_pos = 50 in
+Dbmod.get_full_record_and_print my_file_data_full start_pos;
+
+let start_pos = 100 in
+Dbmod.get_full_record_and_print my_file_data_full start_pos;
+
 let file_name = "test_create.dat" in
   let res1 = Dbmod.create file_name in
   print_endline ("Create file " ^ file_name);

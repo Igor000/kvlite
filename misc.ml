@@ -341,6 +341,19 @@ module Dbmod = struct
       (result_binary, lseek_offset, result_int)
      ;;
 
+   let get_full_record_and_print file_data start_pos =
+    print_endline ("get_full_record_and_print() ===== pos = " ^ string_of_int(start_pos) );
+    let var1_tuple = find_full_record file_data start_pos in 
+    let (var1_data, start_pos1, bytes_size1 ) = var1_tuple in
+    let var1_1 = marshal_from_bytes var1_data in 
+    let key1, val1 = get_key_value var1_1 in 
+    begin
+      print_endline ("key = " ^ key1  ^ " value = " ^ val1 );
+      print_endline("Created var1 = " ^  print_created var1_1);
+      print_endline("Start pos = " ^  string_of_int(start_pos1) ^ " byte_size = " ^ Int64.to_string(bytes_size1) );
+    end;
+  ;;
+
 end;;
 
 
