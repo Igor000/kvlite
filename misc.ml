@@ -132,6 +132,17 @@ module Dbmod = struct
       result
   ;;
 
+  let go_to_pos file_data lseek_offset =
+    let offset_new = Unix.(lseek file_data.fd_file lseek_offset SEEK_SET) in
+    begin
+      if offset_new <> lseek_offset then
+        let err_msg =
+          sprintf "Dbmod.read_string: db: %s off: %d  off': %d"
+            file_data.file_name lseek_offset offset_new in
+        failwith err_msg
+    end;
+    ();;
+
   let write_string file_data my_str =
      (* go to end of data file *)
      let off = Unix.(lseek file_data.fd_file 0 SEEK_END) in
@@ -321,8 +332,14 @@ module Dbmod = struct
      print_endline "Printing index_map ==================" ;
      Ht.iter (fun key value -> Stdlib.Printf.printf "%s -> %d\n" key value) file_data.index_map;;
      print_endline "End of index_map ====================" ;
+   ;;
 
- 
+   let find_full_record file_data lseek_offset =
+      go_to_pos file_data lseek_offset;
+      let result_int = read_int_current_pos file_data in
+      let result_binary = read_bytes_current_pos  file_data result_int in
+      (result_binary, lseek_offset, result_int)
+     ;;
 
 end;;
 

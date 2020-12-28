@@ -261,6 +261,7 @@ let my_file_data_full = Dbmod.open_existing_file file_name_full in
 
   (*  ===================   *)
 
+
 let var1_tuple = Dbmod.read_full_record_current_pos my_file_data_full in
 let (var1_data, start_pos1, bytes_size1 ) = var1_tuple in
 let var1_1 = Dbmod.marshal_from_bytes var1_data in 
@@ -291,6 +292,42 @@ begin
   print_endline("Start pos = " ^  string_of_int(start_pos3) ^ " byte_size = " ^ Int64.to_string(bytes_size3) );
 end;
 
+print_endline ("Testing find_full_record() =========================");
+let start_pos = 0 in 
+print_endline ("===== Pos = " ^ string_of_int(start_pos) );
+let var1_tuple = Dbmod.find_full_record my_file_data_full start_pos in 
+let (var1_data, start_pos1, bytes_size1 ) = var1_tuple in
+let var1_1 = Dbmod.marshal_from_bytes var1_data in 
+let key1, val1 = Dbmod.get_key_value var1_1 in 
+begin
+  print_endline ("key = " ^ key1  ^ " value = " ^ val1 );
+  print_endline("Created var1 = " ^  Dbmod.print_created var1_1);
+  print_endline("Start pos = " ^  string_of_int(start_pos1) ^ " byte_size = " ^ Int64.to_string(bytes_size1) );
+end;
+
+let start_pos = 50 in 
+print_endline ("===== Pos = " ^ string_of_int(start_pos) );
+let var2_tuple = Dbmod.find_full_record my_file_data_full start_pos in 
+let (var2_data, start_pos2, bytes_size2 ) = var2_tuple in
+let var2_1 = Dbmod.marshal_from_bytes var2_data in
+let key2, val2  = Dbmod.get_key_value var2_1 in 
+begin
+  print_endline ("key = " ^ key2  ^ " value = " ^ val2 );
+  print_endline("Created var2 = " ^  Dbmod.print_created var2_1); 
+  print_endline("Start pos = " ^  string_of_int(start_pos2) ^ " byte_size = " ^ Int64.to_string(bytes_size2) );
+end;
+
+let start_pos = 100 in 
+print_endline ("===== Pos = " ^ string_of_int(start_pos) );
+let var3_tuple = Dbmod.find_full_record my_file_data_full start_pos in 
+let (var3_data, start_pos3, bytes_size3 ) = var3_tuple in
+let var3_1 = Dbmod.marshal_from_bytes var3_data in
+let key3, val3 = Dbmod.get_key_value var3_1 in 
+begin
+  print_endline ("key = " ^ key3  ^ " value = " ^ val3 );
+  print_endline("Created var3 = " ^  Dbmod.print_created var3_1);
+  print_endline("Start pos = " ^  string_of_int(start_pos3) ^ " byte_size = " ^ Int64.to_string(bytes_size3) );
+end;
 (****************** *)
 
 let file_name = "test_create.dat" in
