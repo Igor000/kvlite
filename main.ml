@@ -256,6 +256,8 @@ print_endline ("Result of write_full_record   = " ^ string_of_int( result3) ^ " 
 
 Dbmod.print_hash_map my_file_data_full;
 
+Dbmod.print_hash_map_full_record my_file_data_full;
+
 Dbmod.close_simple my_file_data_full.fd_file ;
 let my_file_data_full = Dbmod.open_existing_file file_name_full in
 
@@ -339,6 +341,10 @@ Dbmod.get_full_record_and_print my_file_data_full start_pos;
 
 let start_pos = 100 in
 Dbmod.get_full_record_and_print my_file_data_full start_pos;
+
+
+ 
+
 
 let file_name = "test_create.dat" in
   let res1 = Dbmod.create file_name in

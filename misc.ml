@@ -329,10 +329,12 @@ module Dbmod = struct
      ;;
 
    let print_hash_map file_data = 
-     print_endline "Printing index_map ==================" ;
-     Ht.iter (fun key value -> Stdlib.Printf.printf "%s -> %d\n" key value) file_data.index_map;;
-     print_endline "End of index_map ====================" ;
+     print_endline "Starting print_hash_map() >>==================" ;
+     Ht.iter (fun key value -> Stdlib.Printf.printf "%s -> %d\n" key value) file_data.index_map;
+     print_endline "<<==================== Completed print_hash_map()" ;
    ;;
+
+
 
    let find_full_record file_data lseek_offset =
       go_to_pos file_data lseek_offset;
@@ -353,6 +355,14 @@ module Dbmod = struct
       print_endline("Start pos = " ^  string_of_int(start_pos1) ^ " byte_size = " ^ Int64.to_string(bytes_size1) );
     end;
   ;;
+
+
+  let print_hash_map_full_record file_data = 
+    print_endline "Starting print_hash_map_full_record()  >>==================" ;
+    Ht.iter (fun key value -> (Stdlib.Printf.printf "%s -> %d\n" key value);  get_full_record_and_print file_data value  ) file_data.index_map;
+    print_endline "<<==================== Completed  print_hash_map_full_record() " ;
+  ;;
+  
 
 end;;
 
