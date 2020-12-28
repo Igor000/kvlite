@@ -315,6 +315,14 @@ module Dbmod = struct
      let result_int = read_int_current_pos file_data in
      let result_binary = read_bytes_current_pos  file_data result_int in
      (result_binary, curr_pos, result_int)
+     ;;
+
+   let print_hash_map file_data = 
+     print_endline "Printing index_map ==================" ;
+     Ht.iter (fun key value -> Stdlib.Printf.printf "%s -> %d\n" key value) file_data.index_map;;
+     print_endline "End of index_map ====================" ;
+
+ 
 
 end;;
 

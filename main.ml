@@ -254,6 +254,8 @@ let key3, _ = Dbmod.get_key var3 in
 let result3, start_pos3  = Dbmod.write_full_record my_file_data_full (Dbmod.marshal_to_bytes var3) key3 in
 print_endline ("Result of write_full_record   = " ^ string_of_int( result3) ^ " start_pos =" ^ string_of_int( start_pos3));
 
+Dbmod.print_hash_map my_file_data_full;
+
 Dbmod.close_simple my_file_data_full.fd_file ;
 let my_file_data_full = Dbmod.open_existing_file file_name_full in
 
