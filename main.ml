@@ -343,14 +343,27 @@ let start_pos = 100 in
 Dbmod.get_full_record_and_print my_file_data_full start_pos;
 
 
- 
+
+let hash_data = Dbmod.marshal_to_bytes  my_file_data_full.index_map in 
+print_endline ("hash_data len in bytes = " ^ string_of_int(Bytes.length(hash_data)));
+
+let wriitedn_index_data = Dbmod.write_bytes_simple my_file_data_full.fd_file_index hash_data in 
+print_endline ("wriitedn_index_data len in bytes = " ^ string_of_int(wriitedn_index_data));
 
 
+(*
+Unix.close my_file_data_full.fd_file_index;
+
+let file_name_full = "test_full_record2.dat" in
+let my_file_data = Dbmod.open_existing_file file_name_full;
+*)
+
+(*
 let file_name = "test_create.dat" in
   let res1 = Dbmod.create file_name in
   print_endline ("Create file " ^ file_name);
   print_endline ("=========================");
-
+*)
 
 
 
