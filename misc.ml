@@ -17,8 +17,11 @@ type bytes_data = { bytes_size : int; bytes_data  : bytes }
                  
 type file_data  = { file_name: string ; 
                       fd_file: Unix.file_descr;
-                      file_name_index: string ;                
+                      file_name_index: string ;
+                      fd_file_index: Unix.file_descr;                
                       index_map: (string, int) Ht.t }
+
+type hash_data = {hash_map: (string, int) Ht.t}
 
 
 type db = { data_fn: string;
@@ -88,6 +91,10 @@ module Dbmod = struct
      let var2 : db_data  = Marshal.from_bytes var_as_bytes  0 in
      var2;;
 
+  let marshal_from_bytes_to_hash var_as_bytes =
+     let var : hash_data = Marshal.from_bytes var_as_bytes  0 in
+     var;;
+
   let create fn =
     let data_fn = fn in
     let index_fn = fn ^ ".idx" in
@@ -114,7 +121,7 @@ module Dbmod = struct
      let index_map : (string, int) Ht.t = Ht.create 1024 in 
      
 
-     { file_name; fd_file; file_name_index; index_map };;  
+     { file_name; fd_file; file_name_index; fd_file_index; index_map };;  
 
 
   let close_simple fd_file =
@@ -123,8 +130,9 @@ module Dbmod = struct
   let open_existing_file file_name = 
      let fd_file = Unix.(openfile file_name  [O_RDWR] 0o600) in
      let file_name_index = file_name ^ ".idx" in
+     let fd_file_index = Unix.(openfile file_name_index  [O_RDWR] 0o600) in
      let index_map : (string, int) Ht.t = Ht.create 1024 in 
-     { file_name; fd_file; file_name_index; index_map };;  
+     { file_name; fd_file; file_name_index; fd_file_index; index_map };;  
 
 
   let get_current_pos file_data = 
@@ -363,6 +371,28 @@ module Dbmod = struct
     print_endline "<<==================== Completed  print_hash_map_full_record() " ;
   ;;
   
+  (*  We need to combine with the write_bytes() *)
+  let write_bytes_simple fd_file my_buffer =
+    (* go to end of data file *)
+    let off = Unix.(lseek fd_file 0 SEEK_END) in
+    let len = Bytes.length my_buffer in
+ 
+(*     Unix.single_write fd  ~buf: my_buf  ~pos: 0  ~len:  7  ;; *)
+
+    (* Write  *)
+    let written_bytes = Unix.write fd_file my_buffer 0 len in 
+    begin
+      if written_bytes <> len then
+        let err_msg =
+          sprintf 
+            "Dbmod..write_bytes:" in
+            (*
+            "Dbmod..write_bytes: file_data: %s my_str: %s written_bytes: %d len: %d"
+            file_data.file_name Bytes.to_string(my_buffer) written_bytes len in
+               *)
+        failwith err_msg
+    end;
+    written_bytes;;
 
 end;;
 
