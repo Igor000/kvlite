@@ -134,6 +134,11 @@ module Dbmod = struct
      let index_map : (string, int) Ht.t = Ht.create 1024 in 
      { file_name; fd_file; file_name_index; fd_file_index; index_map };;  
 
+     (* TODO
+  let open_simple_file file_name = 
+      let fd_file = Unix.(openfile file_name  [O_RDWR] 0o600) in
+      fd_file;;
+*)
 
   let get_current_pos file_data = 
       let result = Unix.(lseek file_data.fd_file 0 SEEK_CUR) in
@@ -395,6 +400,34 @@ module Dbmod = struct
     written_bytes;;
 
 end;;
+
+let file_size file_name = 
+  let my_stats = Unix.stat file_name in
+  my_stats.st_size;;
+
+(* TODO
+  let read_whole_file file_name = 
+  let fd_file = open_simple_file file_name in
+  let file_size = file_size file_name in
+  
+  let my_buffer = Bytes.create file_size  in
+
+  let bytes_read = Unix.(read fd_file my_buffer 0 file_size  ) in
+
+  begin
+     if bytes_read <> file_size then
+       let err_msg =
+         sprintf "Dbmod.read_bytes: db: %s  len: %d read: %d"
+         file_name file_size bytes_read in
+       failwith err_msg
+  end;
+  (* *) 
+
+  my_buffer
+
+;;
+
+*)
 
 
 module M = struct 
