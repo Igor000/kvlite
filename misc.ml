@@ -92,7 +92,10 @@ module Dbmod = struct
      var2;;
 
   let marshal_from_bytes_to_hash var_as_bytes =
-     let var : hash_data = Marshal.from_bytes var_as_bytes  0 in
+
+     let var  = Marshal.from_bytes var_as_bytes  0 in  
+     (* TODO !! *)
+     (* let var : hash_data = Marshal.from_bytes var_as_bytes  0 in  *)
      var;;
 
   let create fn =
@@ -134,11 +137,11 @@ module Dbmod = struct
      let index_map : (string, int) Ht.t = Ht.create 1024 in 
      { file_name; fd_file; file_name_index; fd_file_index; index_map };;  
 
-     (* TODO
+     
   let open_simple_file file_name = 
       let fd_file = Unix.(openfile file_name  [O_RDWR] 0o600) in
       fd_file;;
-*)
+
 
   let get_current_pos file_data = 
       let result = Unix.(lseek file_data.fd_file 0 SEEK_CUR) in
@@ -399,14 +402,14 @@ module Dbmod = struct
     end;
     written_bytes;;
 
-end;;
+
 
 let file_size file_name = 
   let my_stats = Unix.stat file_name in
   my_stats.st_size;;
 
-(* TODO
-  let read_whole_file file_name = 
+(* TODO *)
+let read_whole_file file_name = 
   let fd_file = open_simple_file file_name in
   let file_size = file_size file_name in
   
@@ -427,8 +430,26 @@ let file_size file_name =
 
 ;;
 
+let hash_from_file file_name =
+  let my_buffer2 = read_whole_file file_name in
+  let len = Bytes.length my_buffer2 in
+  let my_hash =  marshal_from_bytes_to_hash my_buffer2 in
+  begin
+      print_endline ("file name "  ^ file_name);
+      print_endline ("buffer len "  ^ string_of_int(len ));
+      print_endline ("hash tbl len = " ^ string_of_int(Ht.length my_hash))
+  end;
+  my_hash;;  
+  
+  (*
+let print_hash my_hash = 
+  Hashtbl.iter (fun key value -> Printf.printf "%s -> %s\n" key value) my_hash in
+  (* Ht.iter (fun key value -> Stdlib.Printf.printf "%s -> %d\n" key value) my_hash in  *)
+  ();;  
 *)
 
+
+end;; 
 
 module M = struct 
   let x = 42 
