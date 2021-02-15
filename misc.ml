@@ -93,9 +93,10 @@ module Dbmod = struct
 
   let marshal_from_bytes_to_hash var_as_bytes =
 
-     let var  = Marshal.from_bytes var_as_bytes  0 in  
-     (* TODO !! *)
+     (* let var  = Marshal.from_bytes var_as_bytes  0 in  *)
+     (* TODO !! ?? *)
      (* let var : hash_data = Marshal.from_bytes var_as_bytes  0 in  *)
+     let var :  (string, int) Ht.t = Marshal.from_bytes var_as_bytes  0 in 
      var;;
 
   let create fn =
@@ -350,7 +351,13 @@ module Dbmod = struct
      print_endline "<<==================== Completed print_hash_map()" ;
    ;;
 
-
+   (* TODO ??
+   let print_hash_map2 hash_map: (string, int) Ht.t  = 
+    print_endline "Starting print_hash_map2() >>==================" ;
+    Ht.iter (fun key value -> Stdlib.Printf.printf "%s -> %d\n" key value) hash_map;
+    (* print_endline "<<==================== Completed print_hash_map2()" ;  *)
+  ;;
+  *)
 
    let find_full_record file_data lseek_offset =
       go_to_pos file_data lseek_offset;
@@ -437,7 +444,7 @@ let hash_from_file file_name =
   begin
       print_endline ("file name "  ^ file_name);
       print_endline ("buffer len "  ^ string_of_int(len ));
-      print_endline ("hash tbl len = " ^ string_of_int(Ht.length my_hash))
+      print_endline ("hash tbl len = " ^ string_of_int(Ht.length my_hash))      
   end;
   my_hash;;  
   
