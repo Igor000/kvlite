@@ -352,7 +352,7 @@ print_endline ("wriitedn_index_data len in bytes = " ^ string_of_int(wriitedn_in
 
 print_endline ("============== hash_map from disk ---------------------" );
 let new_test_hash = Dbmod.hash_from_file "test_full_record2.dat.idx" in
-Hashtbl.iter (fun x y -> Printf.printf "%s -> %s\n" x y) new_test_hash;;
+Hashtbl.iter (fun x y -> Printf.printf "%s -> %d\n" x y) new_test_hash;;
 (* Dbmod.print_hash new_test_hash ;; *)
 
 
