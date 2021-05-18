@@ -1,4 +1,5 @@
 (tests       
-  (names test_foo test_list)
-  (libraries ounit2)
+  (names test_foo test_list test_kvlite)
+  (libraries ounit2 kvlite)
+
 )
